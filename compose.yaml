@@ -1,0 +1,36 @@
+﻿services:
+  authservice:
+    image: authservice
+    build:
+      context: .
+      dockerfile: AuthService/Dockerfile
+
+  accessoryservice:
+    image: accessoryservice
+    build:
+      context: .
+      dockerfile: AccessoryService/Dockerfile
+
+  cartandwishlistservice:
+    image: cartandwishlistservice
+    build:
+      context: .
+      dockerfile: CartAndWishListService/Dockerfile
+
+  orderservice:
+    image: orderservice
+    build:
+      context: .
+      dockerfile: OrderService/Dockerfile
+
+  exchangeservice:
+    image: exchangeservice
+    build:
+      context: .
+      dockerfile: ExchangeService/Dockerfile
+
+  chatservice:
+    image: chatservice
+    build:
+      context: .
+      dockerfile: ChatService/Dockerfile
