@@ -13,12 +13,8 @@ public partial class AuthServiceContext : DbContext
     {
     }
 
-    public virtual DbSet<Address> Addresses { get; set; }
-
     public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
-
-    public virtual DbSet<InformationUser> InformationUsers { get; set; }
-
+    
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<SystemConfig> SystemConfigs { get; set; }
@@ -56,50 +52,6 @@ public partial class AuthServiceContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.UseOpenIddict();
-
-        modelBuilder.Entity<Address>(entity =>
-        {
-            entity.HasKey(e => e.AddressId).HasName("PK__Address__CAA247C8F597A43D");
-
-            entity.ToTable("Address");
-
-            entity.Property(e => e.AddressId)
-                .HasDefaultValueSql("(newid())")
-                .HasColumnName("address_id");
-            entity.Property(e => e.AddressLine)
-                .HasMaxLength(255)
-                .HasColumnName("address_line");
-            entity.Property(e => e.City)
-                .HasMaxLength(50)
-                .HasColumnName("city");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(50)
-                .HasColumnName("created_by");
-            entity.Property(e => e.District)
-                .HasMaxLength(50)
-                .HasColumnName("district");
-            entity.Property(e => e.IsActive)
-                .HasDefaultValue(true)
-                .HasColumnName("is_active");
-            entity.Property(e => e.Province).HasColumnName("province");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(50)
-                .HasColumnName("updated_by");
-            entity.Property(e => e.Username)
-                .HasMaxLength(50)
-                .HasColumnName("username");
-            entity.Property(e => e.Ward)
-                .HasMaxLength(50)
-                .HasColumnName("ward");
-        });
-
         modelBuilder.Entity<EmailTemplate>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__email_te__3213E83F83E83DA0");
@@ -128,47 +80,6 @@ public partial class AuthServiceContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("update_by");
-        });
-
-        modelBuilder.Entity<InformationUser>(entity =>
-        {
-            entity.HasKey(e => e.UserName).HasName("PK__Informat__66DCF95DD89F37B1");
-
-            entity.Property(e => e.UserName)
-                .HasMaxLength(50)
-                .HasColumnName("userName");
-            entity.Property(e => e.BirthDate).HasColumnName("birth_date");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(50)
-                .HasColumnName("created_by");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .HasColumnName("email");
-            entity.Property(e => e.FirstName).HasColumnName("first_name");
-            entity.Property(e => e.Gender).HasColumnName("gender");
-            entity.Property(e => e.ImageUrl).HasColumnName("image_url");
-            entity.Property(e => e.IsActive)
-                .HasDefaultValue(true)
-                .HasColumnName("is_active");
-            entity.Property(e => e.LastName).HasColumnName("last_name");
-            entity.Property(e => e.PhoneNumber)
-                .HasMaxLength(50)
-                .HasColumnName("phone_number");
-            entity.Property(e => e.PlanExpired)
-                .HasColumnType("datetime")
-                .HasColumnName("plan_expired");
-            entity.Property(e => e.PlanId).HasColumnName("plan_id");
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(50)
-                .HasColumnName("updated_by");
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -216,19 +127,8 @@ public partial class AuthServiceContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex").HasFillFactor(100);
-
-            entity.HasIndex(e => e.RoleId, "IX_Users_RoleId").HasFillFactor(100);
-
-            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
-                .IsUnique()
-                .HasFilter("([NormalizedUserName] IS NOT NULL)")
-                .HasFillFactor(100);
-
             entity.Property(e => e.Email).HasMaxLength(256);
             entity.Property(e => e.Key).HasColumnName("key");
-            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
-            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
             entity.Property(e => e.UserName).HasMaxLength(256);
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)

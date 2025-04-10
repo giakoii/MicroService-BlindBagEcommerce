@@ -1,7 +1,7 @@
 using OpenIdConnect.Utils;
 using OpenIdConnect.Utils.Consts;
 
-namespace OpenIdConnect.Controllers;
+namespace AuthService.Controllers;
 
 /// <summary>
 /// API Response (Common) Abstract Class
