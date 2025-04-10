@@ -12,28 +12,6 @@ namespace AuthService.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Address",
-                columns: table => new
-                {
-                    address_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newid())"),
-                    username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    address_line = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    ward = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    city = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    district = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    created_at = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
-                    created_by = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    is_active = table.Column<bool>(type: "bit", nullable: true, defaultValue: true),
-                    updated_at = table.Column<DateTime>(type: "datetime", nullable: true),
-                    updated_by = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    province = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Address__CAA247C8F597A43D", x => x.address_id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EmailTemplate",
                 columns: table => new
                 {
@@ -51,31 +29,6 @@ namespace AuthService.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__email_te__3213E83F83E83DA0", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InformationUsers",
-                columns: table => new
-                {
-                    userName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    phone_number = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    image_url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    birth_date = table.Column<DateOnly>(type: "date", nullable: true),
-                    gender = table.Column<byte>(type: "tinyint", nullable: true),
-                    plan_id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    created_at = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    created_by = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    is_active = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    updated_at = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    updated_by = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    first_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    last_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    plan_expired = table.Column<DateTime>(type: "datetime", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Informat__66DCF95DD89F37B1", x => x.userName);
                 });
 
             migrationBuilder.CreateTable(
@@ -186,9 +139,7 @@ namespace AuthService.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -319,37 +270,16 @@ namespace AuthService.Migrations
                 .Annotation("SqlServer:FillFactor", 100);
 
             migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "Users",
-                column: "NormalizedEmail")
-                .Annotation("SqlServer:FillFactor", 100);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
-                column: "RoleId")
-                .Annotation("SqlServer:FillFactor", 100);
-
-            migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "Users",
-                column: "NormalizedUserName",
-                unique: true,
-                filter: "([NormalizedUserName] IS NOT NULL)")
-                .Annotation("SqlServer:FillFactor", 100);
+                column: "RoleId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Address");
-
-            migrationBuilder.DropTable(
                 name: "EmailTemplate");
-
-            migrationBuilder.DropTable(
-                name: "InformationUsers");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictScopes");
