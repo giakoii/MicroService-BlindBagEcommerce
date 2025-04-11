@@ -1,7 +1,7 @@
 using Client.Utils;
 using Client.Utils.Consts;
 
-namespace Client.Controllers;
+namespace ProfileService.Controllers;
 
 /// <summary>
 /// API Response (Common) Abstract Class

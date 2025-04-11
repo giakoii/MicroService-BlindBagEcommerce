@@ -1,12 +1,13 @@
-using Client.Controllers.AbstractClass;
-using Client.Services;
+using System.Data;
 using Client.SystemClient;
 using Client.Utils;
 using Client.Utils.Consts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NLog;
+using ProfileService.Models.Helper;
 
-namespace Client.Controllers;
+namespace ProfileService.Controllers;
 
 public abstract class AbstractApiGetAsyncController<T, U, V> : ControllerBase
     where T : AbstractApiRequest
@@ -20,7 +21,7 @@ public abstract class AbstractApiGetAsyncController<T, U, V> : ControllerBase
     /// <summary>
     /// Main processing
     /// </summary>
-    protected abstract Task<U> ExecGet(T request);
+    protected abstract Task<U> Exec(T request);
 
     /// <summary>
     /// Error check
@@ -38,26 +39,26 @@ public abstract class AbstractApiGetAsyncController<T, U, V> : ControllerBase
     /// <remarks>
     /// Default SNAPSHOT Change it in the constructor
     /// </remarks>
-    protected System.Data.IsolationLevel _isolationLevel = System.Data.IsolationLevel.Snapshot;
+    protected IsolationLevel _isolationLevel = IsolationLevel.Snapshot;
 
     /// <summary>
     /// TemplateMethod
     /// </summary>
     /// <param name="request"></param>
-    /// <param name="identityService"></param>
+    /// <param name="context"></param>
     /// <param name="logger"></param>
     /// <param name="returnValue"></param>
     /// <returns></returns>
-    protected async Task<U> Get(T request, IIdentityService identityService, Logger logger, U returnValue)
+    protected async Task<U> Get(T request, AppDbContext context, Logger logger, U returnValue)
     {
-        var loggingUtil = new LoggingUtil(logger, identityService.IdentityEntity?.UserName ?? "System");
+        var loggingUtil = new LoggingUtil(logger, context.IdentityEntity?.UserName ?? "System");
 
         // Get identity information 
-        identityService.IdentityEntity = _identityApiClient?.GetIdentity(User);
+        context.IdentityEntity = _identityApiClient?.GetIdentity(User);
         loggingUtil.StartLog(request);
 
         // Check authentication information
-        if (identityService.IdentityEntity == null)
+        if (context.IdentityEntity == null)
         {
             // Authentication error
             loggingUtil.FatalLog($"Authenticated, but information is missing.");
@@ -70,7 +71,7 @@ public abstract class AbstractApiGetAsyncController<T, U, V> : ControllerBase
         // Additional user information
         try
         {
-            identityService.GetUserName(identityService.IdentityEntity.UserName);
+            await context.Users.AsTracking().FirstOrDefaultAsync(x => x.UserName == context.IdentityEntity.UserName);
         }
         catch (Exception e)
         {
@@ -89,7 +90,7 @@ public abstract class AbstractApiGetAsyncController<T, U, V> : ControllerBase
             returnValue = ErrorCheck(request, detailErrorList);
 
             // If there is no error, execute the main process
-            if (returnValue.Success) returnValue = await ExecGet(request);
+            if (returnValue.Success) returnValue = await Exec(request);
         }
         catch (Exception e)
         {

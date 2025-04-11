@@ -1,15 +1,12 @@
-using System.Text.Json;
-using Client.Models.Helper;
-using Client.Services;
 using Client.SystemClient;
 using Client.Utils;
 using Client.Utils.Consts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using NLog;
+using ProfileService.Models.Helper;
 
-namespace Client.Controllers.AbstractClass;
+namespace ProfileService.Controllers;
 
 public abstract class AbstractApiGetController<T, U, V> : ControllerBase
     where U : AbstractApiResponse<V>
@@ -28,16 +25,16 @@ public abstract class AbstractApiGetController<T, U, V> : ControllerBase
     /// <summary>
     /// Template method for GET with filters
     /// </summary>
-    protected U Get(T filter, IIdentityService identityService, Logger logger, U returnValue)
+    protected U Get(T filter, AppDbContext context, Logger logger, U returnValue)
     {
-        var loggingUtil = new LoggingUtil(logger, identityService.IdentityEntity?.UserName ?? "System");
+        var loggingUtil = new LoggingUtil(logger, context.IdentityEntity?.UserName ?? "System");
 
         // Get identity information 
-        identityService.IdentityEntity = _identityApiClient.GetIdentity(User);
+        context.IdentityEntity = _identityApiClient.GetIdentity(User);
         loggingUtil.StartLog();
 
         // Check authentication information
-        if (identityService.IdentityEntity == null)
+        if (context.IdentityEntity == null)
         {
             // Authentication error
             loggingUtil.FatalLog($"Authenticated, but information is missing.");
@@ -49,7 +46,7 @@ public abstract class AbstractApiGetController<T, U, V> : ControllerBase
         // Additional user information
         try
         {
-            identityService.GetUserName(identityService.IdentityEntity.UserName);
+            context.Users.AsTracking().FirstOrDefault(x => x.UserName == context.IdentityEntity.UserName);
         }
         catch (Exception e)
         {

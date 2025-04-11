@@ -1,15 +1,13 @@
-using Client.Controllers.AbstractClass;
-using Client.Models.Helper;
-using Client.Services;
+using System.Data;
 using Client.SystemClient;
 using Client.Utils;
 using Client.Utils.Consts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using NLog;
+using ProfileService.Models.Helper;
 
-namespace Client.Controllers;
+namespace ProfileService.Controllers;
 
 /// <summary>
 /// API Controller Abstract Class
@@ -47,26 +45,26 @@ public abstract class AbstractApiController<T, U, V> : ControllerBase
     /// <remarks>
     /// Default SNAPSHOT Change it in the constructor
     /// </remarks>
-    protected System.Data.IsolationLevel _isolationLevel = System.Data.IsolationLevel.Snapshot;
+    protected IsolationLevel _isolationLevel = IsolationLevel.Snapshot;
 
     /// <summary>
     /// TemplateMethod
     /// </summary>
     /// <param name="request"></param>
-    /// <param name="identityService"></param>
+    /// <param name="context"></param>
     /// <param name="logger"></param>
     /// <param name="returnValue"></param>
     /// <returns></returns>
-    protected U ProcessRequest(T request, IIdentityService identityService, Logger logger, U returnValue)
+    protected U ProcessRequest(T request, AppDbContext context, Logger logger, U returnValue)
     {
-        var loggingUtil = new LoggingUtil(logger, identityService.IdentityEntity?.UserName ?? "System");
+        var loggingUtil = new LoggingUtil(logger, context.IdentityEntity?.UserName ?? "System");
 
         // Get identity information 
-        identityService.IdentityEntity = _identityApiClient?.GetIdentity(User);
+        context.IdentityEntity = _identityApiClient?.GetIdentity(User);
         loggingUtil.StartLog(request);
 
         // Check authentication information
-        if (identityService.IdentityEntity == null)
+        if (context.IdentityEntity == null)
         {
             // Authentication error
             loggingUtil.FatalLog($"Authenticated, but information is missing.");
@@ -79,7 +77,7 @@ public abstract class AbstractApiController<T, U, V> : ControllerBase
         // Additional user information
         try
         {
-            identityService.GetUserName(identityService.IdentityEntity.UserName);
+            context.Users.AsTracking().FirstOrDefault(x => x.UserName == context.IdentityEntity.UserName);
         }
         catch (Exception e)
         {

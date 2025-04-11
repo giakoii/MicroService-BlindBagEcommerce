@@ -1,4 +1,4 @@
-namespace Client.Controllers;
+namespace ProfileService.Controllers;
 
 /// <summary>
 /// API Request (Common) Inheritance Class

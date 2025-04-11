@@ -1,41 +1,107 @@
+using System.Net;
+using Client.SystemClient;
+using Client.Utils.Consts;
+using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
+using NSwag;
+using NSwag.Generation.Processors.Security;
+using OpenIddict.Validation.AspNetCore;
+using ProfileService.Models.Helper;
+using ProfileService.Utils.Consts;
+using OpenApiSecurityScheme = NSwag.OpenApiSecurityScheme;
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuration
+Env.Load();
+
+// Get the connection string from environment variables
+var connectionString = Environment.GetEnvironmentVariable(EnvConst.ConnectionString);
+
+builder.Services.AddScoped<IIdentityApiClient, IdentityApiClient>();
+
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(connectionString);
+});
+
+// Add services to the container.
+builder.Services.AddControllers();
+
+// SignalR Service
+builder.Services.AddSignalR();
+// Swagger configuration to output API type definitions
+builder.Services.AddOpenApiDocument(config =>
+{
+    config.OperationProcessors.Add(new OperationSecurityScopeProcessor("JWT Token"));
+    config.AddSecurity("JWT Token", Enumerable.Empty<string>(),
+        new OpenApiSecurityScheme()
+        {
+            Type = OpenApiSecuritySchemeType.ApiKey,
+            Name = nameof(Authorization),
+            In = OpenApiSecurityApiKeyLocation.Header,
+            Description = "Copy this into the value field: Bearer {token}"
+        }
+    );
+});
+
+// Allow API to be read from outside
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+    );
+});
+
+// Use AppDbContext that inherits DB context
+builder.Services.AddDbContext<AppDbContext>();
+
+// Configure the authentication server for the API
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+});
+
+
+// Configure the OpenIddict server
+builder.Services.AddOpenIddict()
+    .AddValidation(options =>
+    {
+        options.SetIssuer("https://localhost:5090/");
+        options.AddAudiences(SystemConfig.ServiceClient);
+
+        options.UseIntrospection()
+            .AddAudiences(SystemConfig.ServiceClient)
+            .SetClientId(SystemConfig.ServiceClient)
+            .SetClientSecret(Environment.GetEnvironmentVariable(EnvConst.ClientSecret)!);
+
+        options.UseSystemNetHttp();
+        options.UseAspNetCore();
+    });
+
+// DB context that inherits AppDbContext
+builder.Services.AddHttpContextAccessor();
+
+// ConfigureServices
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
+app.UseCors();
+app.UseRouting();
+app.UseAuthentication();
+app.UseDeveloperExceptionPage(); 
+app.UseStatusCodePages(); 
+app.UseAuthorization();
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast");
-
+app.MapControllers();
+app.UseOpenApi();
+app.UseSwaggerUi();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

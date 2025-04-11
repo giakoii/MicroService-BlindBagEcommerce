@@ -1,12 +1,11 @@
 using System.Text.RegularExpressions;
-using Client.Models.Helper;
 using Client.Utils;
 using Client.Utils.Consts;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
-namespace Client.Controllers.AbstractClass;
+namespace ProfileService.Controllers;
 
 public class AbstractFunction<U, V>
     where U : AbstractApiResponse<V>
