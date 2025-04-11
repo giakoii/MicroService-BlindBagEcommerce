@@ -165,8 +165,10 @@ namespace AuthService.Migrations
 
             modelBuilder.Entity("AuthService.Models.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -221,7 +223,7 @@ namespace AuthService.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("AuthService.Models.VwEmailTemplateVerifyOtp", b =>
+            modelBuilder.Entity("AuthService.Models.VwEmailTemplateVerifyKey", b =>
                 {
                     b.Property<string>("EmailBody")
                         .IsRequired()
@@ -247,7 +249,7 @@ namespace AuthService.Migrations
 
                     b.ToTable((string)null);
 
-                    b.ToView("VW_EmailTemplate_VerifyOTP", (string)null);
+                    b.ToView("VW_EmailTemplate_VerifyKey", (string)null);
                 });
 
             modelBuilder.Entity("AuthService.Models.VwEmailTemplateVerifyUser", b =>
@@ -571,8 +573,8 @@ namespace AuthService.Migrations
 
             modelBuilder.Entity("UserRole", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");

@@ -1,4 +1,4 @@
-namespace OpenIdConnect.Utils.Consts;
+namespace ProfileService.Utils.Consts;
 
 public class EnvConst
 {
