@@ -1,11 +1,9 @@
 using AuthService.Logics.Commons;
 using AuthService.Models;
 using AuthService.Models.Helpers;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenIdConnect.Utils.Consts;
-using OpenIddict.Validation.AspNetCore;
 
 namespace AuthService.Controllers.V1.Users;
 
@@ -33,7 +31,6 @@ public class UserInsertController : ControllerBase
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
     public async Task<UserInsertResponse> Post(UserInsertRequest request)
     {
         var response = new UserInsertResponse() { Success = false };

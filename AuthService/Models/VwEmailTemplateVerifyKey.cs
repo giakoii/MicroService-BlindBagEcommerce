@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AuthService.Models;
 
-public partial class VwEmailTemplateVerifyOtp
+public partial class VwEmailTemplateVerifyKey
 {
     public int Id { get; set; }
 

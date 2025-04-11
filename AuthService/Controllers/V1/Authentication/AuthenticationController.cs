@@ -64,18 +64,14 @@ public class AuthenticationController : ControllerBase
     }
 
     /// <summary>
-    ///  Tokens for password grant type
+    /// Tokens for password grant type
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
     private async Task<IActionResult> TokensForPasswordGrantType(AuthRequest request)
     {
         // Check user exists
-        var userExist = _context.Users
-            .AsNoTracking()
-            .FirstOrDefault(x => (x.UserName == request.UserNameOrEmail || 
-                                 x.Email == request.UserNameOrEmail) &&
-                                 x.EmailConfirmed == true);
+        var userExist = _context.Users.FirstOrDefault(x => x.UserName == request.UserNameOrEmail || x.Email == request.UserNameOrEmail);
         if (userExist == null)
         {
             return BadRequest(new OpenIddictResponse
@@ -86,7 +82,7 @@ public class AuthenticationController : ControllerBase
         }
         
         // Check if User updating
-        if (userExist.LockoutEnabled == true && userExist.LockoutEnd != null && userExist.Key != null)
+        if (userExist.LockoutEnabled == true || userExist.LockoutEnd != null && userExist.Key != null)
         {
             return Unauthorized(new OpenIddictResponse
             {

@@ -29,6 +29,7 @@ public class UserInsertVerifyController : ControllerBase
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
+    [HttpPost]
     public async Task<UserInsertVerifyResponse> Post(UserInsertVerifyRequest request)
     {
         var response = new UserInsertVerifyResponse() { Success = false };
@@ -41,7 +42,7 @@ public class UserInsertVerifyController : ControllerBase
         var userExist = await _context.Users.FirstOrDefaultAsync(x => x.UserName == userNameDecrypt && 
                                                            x.EmailConfirmed == false &&
                                                            x.LockoutEnabled == true &&
-                                                           x.Key == keyDecrypt);
+                                                           x.Key == request.Key);
         if (userExist == null)
         {
             response.SetMessage(MessageId.E11001);

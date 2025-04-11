@@ -131,6 +131,9 @@ builder.Services.AddHostedService<Worker>();
 
 var app = builder.Build();
 
+SeedDatabase.SeedSystemConfig(app.Services);
+SeedDatabase.SeedRole(app.Services);
+
 app.UseCors();
 app.UseRouting();
 app.UseAuthentication();
