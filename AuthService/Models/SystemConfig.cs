@@ -18,6 +18,4 @@ public partial class SystemConfig
     public DateTime UpdatedAt { get; set; }
 
     public string UpdatedBy { get; set; } = null!;
-
-    public string ScreenName { get; set; } = null!;
 }

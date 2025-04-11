@@ -5,14 +5,14 @@ namespace AuthService.Models;
 
 public partial class User
 {
-    public string Id { get; set; } = null!;
+    public Guid Id { get; set; }
 
     public string RoleId { get; set; } = null!;
 
     public string? UserName { get; set; }
-    
+
     public string? Email { get; set; }
-    
+
     public bool EmailConfirmed { get; set; }
 
     public string? PasswordHash { get; set; }
@@ -36,6 +36,6 @@ public partial class User
     public string? Key { get; set; }
 
     public virtual Role Role { get; set; } = null!;
-    
+
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 }
