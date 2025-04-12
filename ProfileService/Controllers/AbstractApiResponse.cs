@@ -1,5 +1,5 @@
-using Client.Utils;
-using Client.Utils.Consts;
+using ProfileService.Utils;
+using ProfileService.Utils.Const;
 
 namespace ProfileService.Controllers;
 

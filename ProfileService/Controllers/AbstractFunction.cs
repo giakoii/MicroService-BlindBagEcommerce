@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
-using Client.Utils;
-using Client.Utils.Consts;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using ProfileService.Utils;
+using ProfileService.Utils.Const;
 
 namespace ProfileService.Controllers;
 

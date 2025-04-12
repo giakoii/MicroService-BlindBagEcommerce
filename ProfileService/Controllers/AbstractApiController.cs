@@ -1,11 +1,11 @@
 using System.Data;
 using Client.SystemClient;
-using Client.Utils;
-using Client.Utils.Consts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using ProfileService.Models.Helper;
+using ProfileService.Utils;
+using ProfileService.Utils.Const;
 
 namespace ProfileService.Controllers;
 
@@ -77,7 +77,7 @@ public abstract class AbstractApiController<T, U, V> : ControllerBase
         // Additional user information
         try
         {
-            context.Users.AsTracking().FirstOrDefault(x => x.UserName == context.IdentityEntity.UserName);
+            context.Profiles.AsTracking().FirstOrDefault(x => x.UserName == context.IdentityEntity.UserName);
         }
         catch (Exception e)
         {

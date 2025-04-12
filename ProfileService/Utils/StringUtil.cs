@@ -1,4 +1,4 @@
-namespace Client.Utils;
+namespace ProfileService.Utils;
 
 /// <summary>
 ///  StringUtil

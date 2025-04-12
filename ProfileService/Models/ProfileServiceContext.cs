@@ -17,7 +17,7 @@ public partial class ProfileServiceContext : DbContext
 
     public virtual DbSet<Address> Addresses { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<Profile> Profiles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -33,7 +33,6 @@ public partial class ProfileServiceContext : DbContext
             optionsBuilder.UseSqlServer(connectionString);
         }
     }
-    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Address>(entity =>
@@ -79,9 +78,11 @@ public partial class ProfileServiceContext : DbContext
                 .HasColumnName("ward");
         });
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<Profile>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370FE601C988");
+
+            entity.ToTable("Profile");
 
             entity.Property(e => e.UserId)
                 .HasDefaultValueSql("(newid())")
@@ -94,9 +95,6 @@ public partial class ProfileServiceContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("created_by");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .HasColumnName("email");
             entity.Property(e => e.FirstName).HasColumnName("first_name");
             entity.Property(e => e.Gender).HasColumnName("gender");
             entity.Property(e => e.ImageUrl).HasColumnName("image_url");
@@ -104,9 +102,6 @@ public partial class ProfileServiceContext : DbContext
                 .HasDefaultValue(true)
                 .HasColumnName("is_active");
             entity.Property(e => e.LastName).HasColumnName("last_name");
-            entity.Property(e => e.PhoneNumber)
-                .HasMaxLength(50)
-                .HasColumnName("phone_number");
             entity.Property(e => e.PlanExpired)
                 .HasColumnType("datetime")
                 .HasColumnName("plan_expired");

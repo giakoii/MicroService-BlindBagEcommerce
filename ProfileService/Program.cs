@@ -1,12 +1,12 @@
 using System.Net;
 using Client.SystemClient;
-using Client.Utils.Consts;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using OpenIddict.Validation.AspNetCore;
 using ProfileService.Models.Helper;
+using ProfileService.Utils.Const;
 using ProfileService.Utils.Consts;
 using OpenApiSecurityScheme = NSwag.OpenApiSecurityScheme;
 
