@@ -111,4 +111,41 @@ public class ProfileService : IProfileService
         response.SetMessage(MessageId.I00001);
         return response;
     }
+
+    /// <summary>
+    /// Update Profile
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="identityEntity"></param>
+    /// <returns></returns>
+    public async Task<Ps010UpdateProfileResponse> UpdateProfile(Ps010UpdateProfileRequest request, IdentityEntity identityEntity)
+    {
+        var response = new Ps010UpdateProfileResponse() { Success = false };
+        
+        // Get user profile
+        var userProfile = _profileRepository.Find(x => x.Username == identityEntity.UserName).FirstOrDefault();
+        if (userProfile == null)
+        {
+            response.SetMessage(MessageId.E11001);
+            return response;
+        }
+        
+        // Update user profile
+        await _profileRepository.ExecuteInTransactionAsync(async () =>
+        {
+            userProfile.FirstName = request.FirstName;
+            userProfile.LastName = request.LastName;
+            userProfile.Gender = request.Gender;
+            userProfile.BirthDate = DateOnly.ParseExact(request.BirthDate!, "dd/MM/yyyy");
+            userProfile.ImageUrl = await _cloudinaryLogic.UploadImageAsync(request.ImageUrl!);
+            _profileRepository.Update(userProfile);
+            await _profileRepository.SaveChangesAsync(identityEntity.UserName);
+            return true;
+        });
+        
+        // True
+        response.Success = true;
+        response.SetMessage(MessageId.I00001);
+        return response;
+    }
 }

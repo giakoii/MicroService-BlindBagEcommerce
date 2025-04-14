@@ -8,4 +8,5 @@ public interface IProfileService
     Task<Ps010InsertProfileResponse> InsertProfile(Ps010InsertProfileRequest request, IdentityEntity identityEntity);
     
     Ps010SelectProfileResponse SelectProfile(IdentityEntity identityEntity);
+    Task<Ps010UpdateProfileResponse> UpdateProfile(Ps010UpdateProfileRequest request, IdentityEntity identityEntity);
 }
