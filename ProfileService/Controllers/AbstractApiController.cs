@@ -77,7 +77,7 @@ public abstract class AbstractApiController<T, U, V> : ControllerBase
         // Additional user information
         try
         {
-            context.Profiles.AsTracking().FirstOrDefault(x => x.UserName == context.IdentityEntity.UserName);
+            context.Profiles.AsTracking().FirstOrDefault(x => x.Username == context.IdentityEntity.UserName);
         }
         catch (Exception e)
         {

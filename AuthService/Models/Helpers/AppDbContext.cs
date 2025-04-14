@@ -1,6 +1,5 @@
-using System.Data;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using OpenIdConnect.Systemserver;
 using OpenIdConnect.Utils.Consts;
 
@@ -22,44 +21,38 @@ public class AppDbContext : AuthServiceContext
     /// <param name="storedProcedureId"></param>
     /// <param name="paramList"></param>
     /// <returns></returns>
-    public Boolean ExecuteStoredProcedure(string storedProcedureId, List<SqlParameter> paramList)
+    public Boolean ExecuteStoredProcedure(string storedProcedureId, List<NpgsqlParameter> paramList)
     {
         var parmSql = "";
 
         if (paramList.Count > 0)
         {
             var count = 0;
-            
+
             // Get parameter name
-            foreach (SqlParameter sqlParameter in paramList)
+            foreach (NpgsqlParameter npgsqlParameter in paramList)
             {
                 if (count != 0)
                 {
                     parmSql += ", ";
                 }
-                
+
                 // Get parameter name
-                parmSql += sqlParameter.ParameterName;
+                parmSql += npgsqlParameter.ParameterName;
 
                 // Get parameter value
-                if (sqlParameter.Direction == ParameterDirection.Output)
-                {
-                    parmSql += " out";
-                }
-            
-                // Get parameter value
-                if (sqlParameter.Value == null) sqlParameter.Value = DBNull.Value;
+                if (npgsqlParameter.Value == null) npgsqlParameter.Value = DBNull.Value;
                 count++;
             }
         }
-        
+
         // Execute stored procedure
-        var updateRownum = Database.ExecuteSqlRaw($"EXECUTE {storedProcedureId} {parmSql}", paramList);
+        var updateRownum = Database.ExecuteSqlRaw($"CALL {storedProcedureId}({parmSql})", paramList);
         _Logger.Debug($"{storedProcedureId} :{updateRownum}");
 
         // Get result
-        SqlParameter result = paramList.Where(x => x.ParameterName == "@o_rslt").FirstOrDefault();
-        if (result?.Value.ToString() == ((int) ConstantEnum.Result.Success).ToString())
+        NpgsqlParameter result = paramList.FirstOrDefault(x => x.ParameterName == "@o_rslt");
+        if (result?.Value.ToString() == ((int)ConstantEnum.Result.Success).ToString())
         {
             _Logger.Debug($"{storedProcedureId} :{result?.Value}");
             return true;
@@ -69,5 +62,4 @@ public class AppDbContext : AuthServiceContext
             _Logger.Error($"{storedProcedureId}:{result?.Value}");
             return false;
         }
-    }
-}
+    }}

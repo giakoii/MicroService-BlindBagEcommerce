@@ -71,7 +71,7 @@ public class AppDbContext : ProfileServiceContext
                 .Select(e => e.Entity);
 
         // Get current time
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
         // Add
         foreach (dynamic newEntity in newEntities)
         {

@@ -7,5 +7,5 @@ public interface IProfileService
 {
     Task<Ps010InsertProfileResponse> InsertProfile(Ps010InsertProfileRequest request, IdentityEntity identityEntity);
     
-    Ps010SelectProfileResponse SelectProfile(string userName);
+    Ps010SelectProfileResponse SelectProfile(IdentityEntity identityEntity);
 }

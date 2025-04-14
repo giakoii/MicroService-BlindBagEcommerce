@@ -11,7 +11,7 @@ public interface IBaseRepository<T, TU> where T : class
 
     IQueryable<TViewEntity> GetView<TViewEntity>() where TViewEntity : class;
 
-    IQueryable<TViewEntity> GetView<TViewEntity>(Expression<Func<TViewEntity, bool>> predicate) where TViewEntity : class;
+    IQueryable<TViewEntity> GetView<TViewEntity>(Expression<Func<TViewEntity, bool>> predicate = null) where TViewEntity : class;
     
     // Get multiple records or one record (asynchronous)
     T? GetById(TU id);

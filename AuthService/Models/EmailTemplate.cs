@@ -7,13 +7,13 @@ public partial class EmailTemplate
 {
     public int Id { get; set; }
 
-    public DateTime CreateAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public string CreateBy { get; set; } = null!;
 
     public bool IsActive { get; set; }
 
-    public DateTime UpdateAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
     public string UpdateBy { get; set; } = null!;
 

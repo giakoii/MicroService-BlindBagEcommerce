@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices.JavaScript;
+
 namespace ProfileService.Utils;
 
 /// <summary>
@@ -120,5 +122,59 @@ public class StringUtil
     {
         return value.ToString() + "%";
     }
+    #endregion
+
+    #region Date Time
+
+    /// <summary>
+    /// Convert to DD/MM/YYYY
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static string ConvertToDateAsDdMmYyyy(DateOnly date)
+    {
+        return date.ToString("dd/MM/yyyy");
+    }
+    
+    /// <summary>
+    /// Convert to DD/MM/YYYY
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static string ConvertToDateAsDdMmYyyy(DateOnly? date)
+    {
+        return date.HasValue ? date.Value.ToString("dd/MM/yyyy") : string.Empty;
+    }
+    
+    /// <summary>
+    /// Convert to DD/MM/YYYY
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static string ConvertToDateAsDdMmYyyy(DateTime date)
+    {
+        return date.ToString("dd/MM/yyyy");
+    }
+    
+    /// <summary>
+    /// Convert to MM/DD/YYYY
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static string ConvertToDateAsMmDdYyyy(DateOnly date)
+    {
+        return date.ToString("MM/dd/yyyy");
+    }
+    
+    /// <summary>
+    /// Convert to MM/DD/YYYY
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static string ConvertToDateAsMmDdYyyy(DateTime date)
+    {
+        return date.ToString("MM/dd/yyyy");
+    }
+
     #endregion
 }

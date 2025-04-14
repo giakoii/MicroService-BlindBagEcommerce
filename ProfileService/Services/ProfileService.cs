@@ -4,6 +4,7 @@ using ProfileService.Logics;
 using ProfileService.Models;
 using ProfileService.Repositories;
 using ProfileService.SystemClient;
+using ProfileService.Utils;
 using ProfileService.Utils.Const;
 
 namespace ProfileService.Services;
@@ -41,7 +42,7 @@ public class ProfileService : IProfileService
         var response = new Ps010InsertProfileResponse() { Success = false };
         
         // Check User exists
-        var user = await _profileRepository.Find(x => x.UserName == identityEntity.UserName).FirstOrDefaultAsync();
+        var user = await _profileRepository.Find(x => x.Username == identityEntity.UserName).FirstOrDefaultAsync();
         if (user != null)
         {
             response.SetMessage(MessageId.E11004);
@@ -55,12 +56,12 @@ public class ProfileService : IProfileService
             var newProfile = new Profile
             {
                 UserId = Guid.Parse(identityEntity.UserId),
-                UserName = identityEntity.UserName,
+                Username = identityEntity.UserName,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Gender = request.Gender,
                 BirthDate = request.BirthDate,
-                ImageUrl = await _cloudinaryLogic.UploadImageAsync(request.ImageUrl),
+                ImageUrl = await _cloudinaryLogic.UploadImageAsync(request.ImageUrl!),
             };
             
             // Insert new address
@@ -82,10 +83,32 @@ public class ProfileService : IProfileService
     /// <summary>
     /// Select Profile
     /// </summary>
-    /// <param name="userName"></param>
     /// <returns></returns>
-    public Ps010SelectProfileResponse SelectProfile(string userName)
+    public Ps010SelectProfileResponse SelectProfile(IdentityEntity identityEntity)
     {
-        throw new NotImplementedException();
+        var response = new Ps010SelectProfileResponse() { Success = false };
+        // x => x.Username == identityEntity.UserName
+        // Get user profile
+        var userProfile = _profileRepository.GetView<VwUserProfile>().FirstOrDefault();
+        if (userProfile == null)
+        {
+            response.SetMessage(MessageId.E11001);
+            return response;
+        }
+
+        response.Response = new Ps010SelectProfileEntity
+        {
+            Email = identityEntity.Email,
+            FirstName = userProfile.FirstName!,
+            LastName = userProfile.LastName!,
+            Gender = userProfile.Gender,
+            BirthDate = StringUtil.ConvertToDateAsDdMmYyyy(userProfile.BirthDate),
+            ImageUrl = userProfile.ImageUrl!,
+        };
+        
+        // True
+        response.Success = true;
+        response.SetMessage(MessageId.I00001);
+        return response;
     }
 }
