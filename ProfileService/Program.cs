@@ -1,13 +1,15 @@
 using System.Net;
 using Client.SystemClient;
-using Client.Utils.Consts;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using OpenIddict.Validation.AspNetCore;
+using ProfileService.Logics;
 using ProfileService.Models.Helper;
-using ProfileService.Utils.Consts;
+using ProfileService.Repositories;
+using ProfileService.Services;
+using ProfileService.Utils.Const;
 using OpenApiSecurityScheme = NSwag.OpenApiSecurityScheme;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,11 +21,19 @@ Env.Load();
 var connectionString = Environment.GetEnvironmentVariable(EnvConst.ConnectionString);
 
 builder.Services.AddScoped<IIdentityApiClient, IdentityApiClient>();
+builder.Services.AddScoped<CloudinaryLogic>();
+
+builder.Services.AddScoped(typeof(IBaseRepository<,>), typeof(BaseRepository<,>));
+
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IProfileService, ProfileService.Services.ProfileService>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IAddressService, AddressService>();
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    options.UseNpgsql(connectionString);
 });
 
 // Add services to the container.
@@ -71,7 +81,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddOpenIddict()
     .AddValidation(options =>
     {
-        options.SetIssuer("https://localhost:5090/");
+        options.SetIssuer("http://localhost:5079/");
         options.AddAudiences(SystemConfig.ServiceClient);
 
         options.UseIntrospection()

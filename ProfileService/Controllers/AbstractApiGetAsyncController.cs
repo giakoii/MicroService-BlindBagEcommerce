@@ -1,11 +1,12 @@
 using System.Data;
 using Client.SystemClient;
-using Client.Utils;
-using Client.Utils.Consts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using ProfileService.Models.Helper;
+using ProfileService.SystemClient;
+using ProfileService.Utils;
+using ProfileService.Utils.Const;
 
 namespace ProfileService.Controllers;
 
@@ -32,6 +33,11 @@ public abstract class AbstractApiGetAsyncController<T, U, V> : ControllerBase
     /// Authentication API client
     /// </summary>
     protected IIdentityApiClient _identityApiClient;
+    
+    /// <summary>
+    /// Identity information
+    /// </summary>
+    protected IdentityEntity _identityEntity;
 
     /// <summary>
     /// Transaction isolation level
@@ -45,20 +51,19 @@ public abstract class AbstractApiGetAsyncController<T, U, V> : ControllerBase
     /// TemplateMethod
     /// </summary>
     /// <param name="request"></param>
-    /// <param name="context"></param>
     /// <param name="logger"></param>
     /// <param name="returnValue"></param>
     /// <returns></returns>
-    protected async Task<U> Get(T request, AppDbContext context, Logger logger, U returnValue)
+    protected async Task<U> Get(T request, Logger logger, U returnValue)
     {
-        var loggingUtil = new LoggingUtil(logger, context.IdentityEntity?.UserName ?? "System");
 
         // Get identity information 
-        context.IdentityEntity = _identityApiClient?.GetIdentity(User);
+        _identityEntity = _identityApiClient?.GetIdentity(User);
+        var loggingUtil = new LoggingUtil(logger, _identityEntity?.UserName ?? "System");
         loggingUtil.StartLog(request);
 
         // Check authentication information
-        if (context.IdentityEntity == null)
+        if (_identityEntity == null)
         {
             // Authentication error
             loggingUtil.FatalLog($"Authenticated, but information is missing.");
@@ -67,22 +72,6 @@ public abstract class AbstractApiGetAsyncController<T, U, V> : ControllerBase
             loggingUtil.EndLog(returnValue);
             return returnValue;
         }
-
-        // Additional user information
-        try
-        {
-            await context.Users.AsTracking().FirstOrDefaultAsync(x => x.UserName == context.IdentityEntity.UserName);
-        }
-        catch (Exception e)
-        {
-            // Additional user information error
-            loggingUtil.FatalLog($"Failed to get additional user information.：{e.Message}");
-            returnValue.Success = false;
-            returnValue.SetMessage(MessageId.E11006);
-            loggingUtil.EndLog(returnValue);
-            return returnValue;
-        }
-
         try
         {
             // Error check

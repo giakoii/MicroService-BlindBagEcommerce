@@ -1,10 +1,9 @@
 using Client.SystemClient;
-using Client.Utils;
-using Client.Utils.Consts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NLog;
-using ProfileService.Models.Helper;
+using ProfileService.SystemClient;
+using ProfileService.Utils;
+using ProfileService.Utils.Const;
 
 namespace ProfileService.Controllers;
 
@@ -14,10 +13,12 @@ public abstract class AbstractApiGetController<T, U, V> : ControllerBase
 {
     protected IIdentityApiClient _identityApiClient;
 
-    public abstract U Get([FromQuery] T filter);
+    protected IdentityEntity _identityEntity;
+
+    public abstract U Get([FromQuery] T request);
 
     /// <summary> Main processing method for GET with filters </summary>
-    protected abstract U ExecGet(T filter);
+    protected abstract U Exec(T request);
 
     /// <summary> Error check method for GET </summary>
     protected internal abstract U ErrorCheck(T request,List<DetailError> detailErrorList);
@@ -25,16 +26,16 @@ public abstract class AbstractApiGetController<T, U, V> : ControllerBase
     /// <summary>
     /// Template method for GET with filters
     /// </summary>
-    protected U Get(T filter, AppDbContext context, Logger logger, U returnValue)
-    {
-        var loggingUtil = new LoggingUtil(logger, context.IdentityEntity?.UserName ?? "System");
-
+    protected U Get(T request, Logger logger, U returnValue)
+    {        
         // Get identity information 
-        context.IdentityEntity = _identityApiClient.GetIdentity(User);
+        _identityEntity = _identityApiClient.GetIdentity(User);
+
+        var loggingUtil = new LoggingUtil(logger, _identityEntity?.UserName ?? "System");
         loggingUtil.StartLog();
 
         // Check authentication information
-        if (context.IdentityEntity == null)
+        if (_identityEntity == null)
         {
             // Authentication error
             loggingUtil.FatalLog($"Authenticated, but information is missing.");
@@ -43,26 +44,12 @@ public abstract class AbstractApiGetController<T, U, V> : ControllerBase
             loggingUtil.EndLog(returnValue);
             return returnValue;
         }
-        // Additional user information
-        try
-        {
-            context.Users.AsTracking().FirstOrDefault(x => x.UserName == context.IdentityEntity.UserName);
-        }
-        catch (Exception e)
-        {
-            // Additional user information error
-            loggingUtil.FatalLog($"Failed to get additional user information.：{e.Message}");
-            returnValue.Success = false;
-            returnValue.SetMessage(MessageId.E11006);
-            loggingUtil.EndLog(returnValue);
-            return returnValue;
-        }
         try
         {
                 var detailErrorList = AbstractFunction<U, V>.ErrorCheck(this.ModelState);
-                returnValue = ErrorCheck(filter, detailErrorList);
+                returnValue = ErrorCheck(request, detailErrorList);
 
-                if (returnValue.Success) returnValue = ExecGet(filter);
+                if (returnValue.Success) returnValue = Exec(request);
         }
         catch (Exception e)
         {

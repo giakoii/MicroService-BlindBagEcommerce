@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Unicode;
 using NLog;
 
-namespace Client.Utils;
+namespace ProfileService.Utils;
 
 public class LoggingUtil
 {
