@@ -151,4 +151,36 @@ public class AddressService : IAddressService
         response.SetMessage(MessageId.I00001);
         return response;
     }
+
+    /// <summary>
+    /// DeleteAddress for Screen Ps020
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="identityEntity"></param>
+    /// <returns></returns>
+    public Ps020DeleteAddressResponse DeleteAddress(Ps020DeleteAddressRequest request, IdentityEntity identityEntity)
+    {
+        var response = new Ps020DeleteAddressResponse() { Success = false };
+        
+        // Begin transaction
+        _addressRepository.ExecuteInTransaction(() =>
+        {
+            // Delete address
+            var address = _addressRepository.GetById(request.AddressId);
+            if (address == null)
+            {
+                response.SetMessage(MessageId.I00000, CommonMessages.AddressOfUserNotFound);
+                return false;
+            }
+            
+            _addressRepository.Update(address);
+            _addressRepository.SaveChanges(identityEntity.UserName, true);
+            return true;
+        });
+        
+        // True
+        response.Success = true;
+        response.SetMessage(MessageId.I00001);
+        return response;
+    }
 }

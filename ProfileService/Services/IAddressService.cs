@@ -13,4 +13,5 @@ public interface IAddressService
     Task<Ps020SelectAddressesResponse> SelectAddresses(Ps020SelectAddressesRequest request, IdentityEntity identityEntity);
     
     Ps020UpdateAddressResponse UpdateAddress(Ps020UpdateAddressRequest request, IdentityEntity identityEntity);
+    Ps020DeleteAddressResponse DeleteAddress(Ps020DeleteAddressRequest request, IdentityEntity identityEntity);
 }
