@@ -3,21 +3,17 @@ using System.Collections.Generic;
 
 namespace ProfileService.Models;
 
-public partial class User
+public partial class Profile
 {
     public Guid UserId { get; set; }
 
-    public string UserName { get; set; } = null!;
-
-    public string? PhoneNumber { get; set; }
-
-    public string? Email { get; set; }
+    public string Username { get; set; } = null!;
 
     public string? ImageUrl { get; set; }
 
     public DateOnly? BirthDate { get; set; }
 
-    public byte? Gender { get; set; }
+    public short? Gender { get; set; }
 
     public Guid? PlanId { get; set; }
 

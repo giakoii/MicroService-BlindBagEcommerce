@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
-using Client.Utils;
-using Client.Utils.Consts;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using ProfileService.Utils;
+using ProfileService.Utils.Const;
 
 namespace ProfileService.Controllers;
 
@@ -39,27 +39,24 @@ public class AbstractFunction<U, V>
                 }
 
                 break;
-            case SqlException:
-                var ex = e as SqlException;
-                if (e.InnerException?.HResult == -2147467259)
+            case PostgresException ex:
+                if (ex.InnerException?.HResult == -2147467259)
                 {
                     // SQL timeout
-                    loggingUtil.ErrorLog($"SQL timeout error ：{e.Message} {e.StackTrace} {e.InnerException}");
+                    loggingUtil.ErrorLog($"SQL timeout error ：{ex.Message} {ex.StackTrace} {ex.InnerException}");
                     returnValue.SetMessage(MessageId.E99003);
                 }
-                else if (ex.Number == 3961)
+                else if (ex.SqlState == "42P01") // Example: Undefined table
                 {
-                    // View definition changed
                     loggingUtil.ErrorLog(
-                        $"The definition of a view, etc. was changed during processing ：{e.Message} {e.StackTrace} {e.InnerException}");
+                        $"The definition of a view, etc. was changed during processing ：{ex.Message} {ex.StackTrace} {ex.InnerException}");
                     returnValue.SetMessage(MessageId.E99004);
                 }
                 else
                 {
-                    loggingUtil.ErrorLog($"A system error has occurred ：{e.Message} {e.StackTrace} {e.InnerException}");
+                    loggingUtil.ErrorLog($"A system error has occurred ：{ex.Message} {ex.StackTrace} {ex.InnerException}");
                     returnValue.SetMessage(MessageId.E99005);
                 }
-
                 break;
             case Exception:
                 // System error

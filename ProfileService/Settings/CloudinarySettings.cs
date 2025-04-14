@@ -1,4 +1,4 @@
-namespace Client.Settings;
+namespace ProfileService.Settings;
 
 public class CloudinarySettings
 {

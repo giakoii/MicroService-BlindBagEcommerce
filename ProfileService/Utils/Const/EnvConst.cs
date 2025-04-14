@@ -1,4 +1,4 @@
-namespace ProfileService.Utils.Consts;
+namespace ProfileService.Utils.Const;
 
 public class EnvConst
 {
@@ -20,5 +20,9 @@ public class EnvConst
     
     public const string MailToBcc = "MAIL_TO_BCC";
     
+    public const string CloudinaryCloudName = "CLOUD_NAME";
+
+    public const string CloudApiKey = "CLOUD_APIKEY";
     
+    public const string CloudApiSecret = "CLOUD_APISECRET";
 }

@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Client.Utils.Consts;
+namespace ProfileService.Utils.Const;
 
 public partial class Messages
 {

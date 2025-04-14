@@ -38,7 +38,7 @@ public partial class AuthServiceContext : DbContext
             if (string.IsNullOrWhiteSpace(connectionString))
                 throw new InvalidOperationException("Missing CONNECTION_STRING environment variable");
 
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseNpgsql(connectionString);
         }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,9 +54,9 @@ public partial class AuthServiceContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Body).HasColumnName("body");
-            entity.Property(e => e.CreateAt)
-                .HasPrecision(6)
-                .HasColumnName("create_at");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("timezone('utc', now())")
+                .HasColumnName("created_at");
             entity.Property(e => e.CreateBy)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -67,9 +67,9 @@ public partial class AuthServiceContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("screen_name");
             entity.Property(e => e.Title).HasColumnName("title");
-            entity.Property(e => e.UpdateAt)
-                .HasPrecision(6)
-                .HasColumnName("update_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("timezone('utc', now())")
+                .HasColumnName("updated_at");
             entity.Property(e => e.UpdateBy)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -79,9 +79,7 @@ public partial class AuthServiceContext : DbContext
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
-                .IsUnique()
-                .HasFilter("([NormalizedName] IS NOT NULL)")
-                .HasFillFactor(100);
+                .IsUnique();
 
             entity.Property(e => e.Name).HasMaxLength(256);
             entity.Property(e => e.NormalizedName).HasMaxLength(256);
@@ -96,23 +94,27 @@ public partial class AuthServiceContext : DbContext
             entity.Property(e => e.Id)
                 .HasMaxLength(50)
                 .HasColumnName("id");
+
             entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
+                .HasDefaultValueSql("timezone('utc', now())")
                 .HasColumnName("created_at");
+
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("created_by");
+
             entity.Property(e => e.IsActive)
                 .HasDefaultValue(true)
                 .HasColumnName("is_active");
+
             entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
+                .HasDefaultValueSql("timezone('utc', now())")
                 .HasColumnName("updated_at");
+
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("updated_by");
+
             entity.Property(e => e.Value).HasColumnName("value");
         });
 
@@ -120,7 +122,7 @@ public partial class AuthServiceContext : DbContext
         {
             entity.HasIndex(e => e.RoleId, "IX_Users_RoleId");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()"); // Use PostgreSQL's UUID generation
             entity.Property(e => e.Email).HasMaxLength(256);
             entity.Property(e => e.Key).HasColumnName("key");
             entity.Property(e => e.UserName).HasMaxLength(256);
@@ -142,7 +144,7 @@ public partial class AuthServiceContext : DbContext
                     {
                         j.HasKey("UserId", "RoleId").HasName("PK_AspNetUserRoles");
                         j.ToTable("UserRoles");
-                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId").HasFillFactor(100);
+                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
                     });
         });
 

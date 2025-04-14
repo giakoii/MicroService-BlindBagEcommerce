@@ -1,4 +1,4 @@
-namespace Client.Utils.Consts;
+namespace ProfileService.Utils.Const;
 
 /// <summary>
 ///  Message Id

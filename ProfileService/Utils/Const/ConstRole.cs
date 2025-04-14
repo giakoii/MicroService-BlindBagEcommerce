@@ -1,4 +1,4 @@
-namespace Client.Utils.Consts;
+namespace ProfileService.Utils.Const;
 
 public static class ConstRole
 {
