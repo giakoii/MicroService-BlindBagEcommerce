@@ -7,6 +7,11 @@ using ProfileService.Utils.Const;
 
 namespace ProfileService.Controllers.V1.Address;
 
+/// <summary>
+/// Ps020SelectAddressesController - Select Addresses
+/// </summary>
+[ApiController]
+[Route("api/v1/[controller]")]
 public class Ps020SelectAddressesController : AbstractApiGetAsyncController<Ps020SelectAddressesRequest, Ps020SelectAddressesResponse, List<Ps020SelectAddressesEntity>>
 {
     private readonly IAddressService _addressService;
