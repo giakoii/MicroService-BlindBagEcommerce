@@ -5,6 +5,7 @@ using ProfileService.Models;
 using ProfileService.Repositories;
 using ProfileService.SystemClient;
 using ProfileService.Utils.Const;
+using ProfileService.Utils.Consts;
 
 namespace ProfileService.Services;
 
@@ -109,6 +110,45 @@ public class AddressService : IAddressService
         response.Success = true;
         response.SetMessage(MessageId.I00001);
         response.Response = addresses;
+        return response;
+    }
+
+    /// <summary>
+    /// UpdateAddress for Screen Ps020
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="identityEntity"></param>
+    /// <returns></returns>
+    public Ps020UpdateAddressResponse UpdateAddress(Ps020UpdateAddressRequest request, IdentityEntity identityEntity)
+    {
+        var response = new Ps020UpdateAddressResponse() { Success = false };
+        
+        // Begin transaction
+        _addressRepository.ExecuteInTransaction(() =>
+        {
+            // Update address
+            var address = _addressRepository.GetById(request.AddressId);
+            if (address == null)
+            {
+                response.SetMessage(MessageId.I00000, CommonMessages.AddressOfUserNotFound);
+                return false;
+            }
+            
+            address.Ward = request.Ward;
+            address.City = request.City;
+            address.District = request.District;
+            address.Province = request.Province;
+            address.AddressLine = request.AddressLine;
+            
+            // Save changes
+            _addressRepository.Update(address);
+            _addressRepository.SaveChanges(identityEntity.UserName);
+            return true;
+        });
+        
+        // True
+        response.Success = true;
+        response.SetMessage(MessageId.I00001);
         return response;
     }
 }

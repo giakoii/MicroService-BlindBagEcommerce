@@ -11,4 +11,6 @@ public interface IAddressService
     Task<Ps020InsertAddressResponse> InsertAddress(Ps020InsertAddressRequest request, IdentityEntity identityEntity);
     
     Task<Ps020SelectAddressesResponse> SelectAddresses(Ps020SelectAddressesRequest request, IdentityEntity identityEntity);
+    
+    Ps020UpdateAddressResponse UpdateAddress(Ps020UpdateAddressRequest request, IdentityEntity identityEntity);
 }
