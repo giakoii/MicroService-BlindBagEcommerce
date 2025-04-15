@@ -40,3 +40,15 @@
     build:
       context: .
       dockerfile: ProfileService/Dockerfile
+
+  paymentservice:
+    image: paymentservice
+    build:
+      context: .
+      dockerfile: PaymentService/Dockerfile
+
+  commonconfigservice:
+    image: commonconfigservice
+    build:
+      context: .
+      dockerfile: CommonConfigService/Dockerfile

@@ -1,0 +1,6 @@
+@CommonConfigService_HostAddress = http://localhost:5259
+
+GET {{CommonConfigService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
