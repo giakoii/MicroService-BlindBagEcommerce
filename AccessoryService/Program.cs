@@ -1,5 +1,9 @@
 using System.Net;
+using AccessoryService.Logics;
 using AccessoryService.Models.Helper;
+using AccessoryService.Repositories;
+using AccessoryService.Services;
+using AccessoryService.SystemClient;
 using AccessoryService.Utils.Const;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +25,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(connectionString);
 });
+
+builder.Services.AddScoped<CloudinaryLogic>();
+
+builder.Services.AddScoped(typeof(IBaseRepository<,>), typeof(BaseRepository<,>));
+builder.Services.AddScoped<IAccessoryRepository, AccessoryRepository>();
+builder.Services.AddScoped<IAccessoryService, AccessoryService.Services.AccessoryService>();
+builder.Services.AddScoped<IIdentityApiClient, IdentityApiClient>();
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
 
 // Add services to the container.
 builder.Services.AddControllers();
