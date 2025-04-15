@@ -43,22 +43,19 @@ public partial class AccessoryServiceContext : DbContext
             optionsBuilder.UseNpgsql(connectionString);
         }
     }
-    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Accessory>(entity =>
         {
             entity.HasKey(e => e.AccessoryId).HasName("accessories_pkey");
 
-            entity.ToTable("accessories");
-
+            entity.ToTable("accessories", "public");
+            
             entity.Property(e => e.AccessoryId)
                 .HasMaxLength(255)
                 .HasColumnName("accessory_id");
             entity.Property(e => e.CategoryId).HasColumnName("category_id");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("created_by");
@@ -79,9 +76,7 @@ public partial class AccessoryServiceContext : DbContext
             entity.Property(e => e.ShortDescription)
                 .HasMaxLength(500)
                 .HasColumnName("short_description");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("updated_by");
@@ -99,9 +94,7 @@ public partial class AccessoryServiceContext : DbContext
             entity.Property(e => e.CategoryName)
                 .HasMaxLength(50)
                 .HasColumnName("category_name");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("created_by");
@@ -109,9 +102,7 @@ public partial class AccessoryServiceContext : DbContext
                 .HasDefaultValue(true)
                 .HasColumnName("is_active");
             entity.Property(e => e.ParentId).HasColumnName("parent_id");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("updated_by");
@@ -133,9 +124,7 @@ public partial class AccessoryServiceContext : DbContext
             entity.Property(e => e.AccessoryId)
                 .HasMaxLength(255)
                 .HasColumnName("accessory_id");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("created_by");
@@ -143,9 +132,7 @@ public partial class AccessoryServiceContext : DbContext
             entity.Property(e => e.IsActive)
                 .HasDefaultValue(true)
                 .HasColumnName("is_active");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("updated_by");
@@ -161,9 +148,7 @@ public partial class AccessoryServiceContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("accessory_id");
             entity.Property(e => e.CategoryId).HasColumnName("category_id");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("created_by");
@@ -182,9 +167,7 @@ public partial class AccessoryServiceContext : DbContext
             entity.Property(e => e.ShortDescription)
                 .HasMaxLength(500)
                 .HasColumnName("short_description");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("updated_by");
@@ -215,17 +198,13 @@ public partial class AccessoryServiceContext : DbContext
             entity.Property(e => e.CategoryName)
                 .HasMaxLength(50)
                 .HasColumnName("category_name");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("created_by");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.ParentId).HasColumnName("parent_id");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("updated_by");
@@ -240,18 +219,14 @@ public partial class AccessoryServiceContext : DbContext
             entity.Property(e => e.AccessoryId)
                 .HasMaxLength(255)
                 .HasColumnName("accessory_id");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("created_by");
             entity.Property(e => e.ImageId).HasColumnName("image_id");
             entity.Property(e => e.ImageUrl).HasColumnName("image_url");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("updated_by");
