@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService", "PaymentSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonConfigService", "CommonConfigService\CommonConfigService.csproj", "{4FD88E2B-DE72-4D21-8DED-4111A02F4ACA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitMQ", "RabbitMQ", "{2919765B-C9A5-41F3-9DEC-6E1765D8D6A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Messaging.RabbitMQ", "Shared.Messaging.RabbitMQ\Shared.Messaging.RabbitMQ.csproj", "{2482A997-39C2-44D2-A86F-5174DFEC435E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,5 +69,12 @@ Global
 		{4FD88E2B-DE72-4D21-8DED-4111A02F4ACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FD88E2B-DE72-4D21-8DED-4111A02F4ACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FD88E2B-DE72-4D21-8DED-4111A02F4ACA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2482A997-39C2-44D2-A86F-5174DFEC435E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2482A997-39C2-44D2-A86F-5174DFEC435E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2482A997-39C2-44D2-A86F-5174DFEC435E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2482A997-39C2-44D2-A86F-5174DFEC435E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2482A997-39C2-44D2-A86F-5174DFEC435E} = {2919765B-C9A5-41F3-9DEC-6E1765D8D6A5}
 	EndGlobalSection
 EndGlobal

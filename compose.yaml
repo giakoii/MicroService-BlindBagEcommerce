@@ -105,9 +105,28 @@
       - "8004:8004"
     networks:
       - kong-net
+        
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      RABBITMQ_DEFAULT_VHOST: "ecommerce"
+    networks:
+      - kong-net
       
 version: '3.8'
 
 networks:
   kong-net:
     driver: bridge
+
+  masstransit.rabbitmq.producer.api:
+    image: masstransit.rabbitmq.producer.api
+    build:
+      context: .
+      dockerfile: Masstransit.RabbitMQ.Producer.API/Dockerfile
